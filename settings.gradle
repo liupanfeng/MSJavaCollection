@@ -1,0 +1,3 @@
+rootProject.name = "MSJavaCollection"
+include ':app'
+include ':compile'
