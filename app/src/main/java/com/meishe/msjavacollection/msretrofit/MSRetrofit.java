@@ -25,6 +25,17 @@ public class MSRetrofit {
     }
 
     public <T> T create(final Class<T> service){
+
+//
+//
+        /*
+        *  这里代理的是MSWeatherApi 这个接口  这个接口里边定义了很多请求的方法
+        *  请求的方法上面就包含了：
+        *  请求的方式：GET or POST
+        *  请求的参数：key value对的方式来保存的
+        *  请求的相对地址：/v3/weather/weatherInfo  这个点
+        *  通过动态代理的方式：相当于是一个切面 统一拿到这些信息
+        * */
         return (T) Proxy.newProxyInstance(service.getClassLoader(), new Class[]{service}, new InvocationHandler() {
             @Override
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
@@ -36,6 +47,7 @@ public class MSRetrofit {
     }
 
     private ServiceMethod loadServiceMethod(Method method) {
+        /*先从缓存里边获取*/
         ServiceMethod result = serviceMethodCache.get(method);
         if (result!=null){
             return result;
@@ -44,6 +56,7 @@ public class MSRetrofit {
         synchronized (serviceMethodCache){
             result=serviceMethodCache.get(method);
             if (result==null){
+                /*如果缓存没有 再通过new的方式创建  ServiceMethod 也使用了建造者设计模式  将retrofit对象和通过动态代理得到的method 传递过去*/
                 result=new ServiceMethod.Builder(this,method).build();
                 serviceMethodCache.put(method,result);
             }

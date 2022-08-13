@@ -15,21 +15,29 @@ import okhttp3.Request;
 
 /**
  * 采用建造者设计模式，进行设计
+ *
+ * 建造者设计模式：
+ * 类的属性  一般都会在建造者里边声明
+ * 构造方法将建造者对象传递进去
+ * build方法会对：1.如果没传递给默认值
+ * 2.必须的内容，没传递直接throw exception
  */
 public class ServiceMethod {
 
+    /*通过调用newCall 将request传进去 得到Call 对象*/
     private final Call.Factory callFactory;
-
+    /*相对地址  拼上base地址就得到一个完成的url*/
     private final String relativeUrl;
-
+    /*是否有请求body  post有  get没有*/
     private final boolean hasBody;
-
+    /*管理请求参数*/
     private final ParameterHandler[] parameterHandler;
 
+    /*用于创建请求体*/
     private FormBody.Builder formBuild;
 
     HttpUrl baseUrl;
-
+    /*请求方式*/
     String httpMethod;
 
     HttpUrl.Builder urlBuilder;
