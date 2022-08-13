@@ -2,15 +2,23 @@ package com.meishe.msjavacollection;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.meishe.msjavacollection.api.MSWeatherApi;
 import com.meishe.msjavacollection.inject.MSBindClick;
 import com.meishe.msjavacollection.inject.MSInjectView;
+import com.meishe.msjavacollection.msretrofit.MSRetrofit;
 
+import java.io.IOException;
 import java.util.ArrayList;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
     @MSInjectView(R.id.sample_text)
     Button button;
+    private MSWeatherApi mMsWeatherApi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,10 +48,12 @@ public class MainActivity extends AppCompatActivity {
 
         button.setText("自动绑定成功");
 
+        MSRetrofit msRetrofit=new MSRetrofit.Builder().baseUrl("https://restapi.amap.com").build();
+        mMsWeatherApi = msRetrofit.create(MSWeatherApi.class);
     }
 
 
-    @MSBindClick({R.id.sample_text})
+    @MSBindClick({R.id.sample_text,R.id.get_weather,R.id.post_weather})
     public void onTestClick(View view){
         switch (view.getId()){
             case R.id.sample_text:
@@ -64,7 +75,47 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
 
             break;
+            case R.id.get_weather:
+                getWeather();
+                break;
+            case R.id.post_weather:
+                postWeather();
+                break;
+            default:
+                break;
         }
+    }
+
+    private void postWeather() {
+        Call call = mMsWeatherApi.postWeather("110101", "ae6c53e2186f33bbf240a12d80672d1b");
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("lpf", "postWeather onFailure----------: " + e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                Log.d("lpf", "postWeather onResponse success:" + response.body().string());
+                response.close();
+            }
+        });
+    }
+
+    private void getWeather() {
+        Call call = mMsWeatherApi.getWeather("110101", "ae6c53e2186f33bbf240a12d80672d1b");
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("lpf", "getWeather onFailure----------: " + e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                Log.d("lpf", "getWeather onResponse  success:" + response.body().string());
+                response.close();
+            }
+        });
     }
 
     public native String stringFromJNI();
