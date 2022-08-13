@@ -1,6 +1,5 @@
-package com.meishe.msjavacollection;
+package com.meishe.msjavacollection.inject;
 
-import androidx.annotation.IdRes;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -8,9 +7,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 
-@Retention(RetentionPolicy.RUNTIME)
+/**
+ *  自动获取参数的值
+ */
 @Target(ElementType.FIELD)
-public @interface MSInjectView {
-
-    @IdRes int value();
+@Retention(RetentionPolicy.RUNTIME)
+public @interface MSAutowired {
+    String value() default "";
 }
+
+
+

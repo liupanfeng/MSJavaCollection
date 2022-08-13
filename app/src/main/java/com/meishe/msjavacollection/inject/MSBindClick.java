@@ -1,4 +1,4 @@
-package com.meishe.msjavacollection;
+package com.meishe.msjavacollection.inject;
 
 
 import android.view.View;
@@ -10,6 +10,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ *自动绑定点击事件
+ */
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
